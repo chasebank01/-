@@ -146,9 +146,9 @@
         document.getElementById("amountInput").addEventListener("input", function() {
             let amount = parseFloat(this.value);
             if (isNaN(amount) || amount <= 0) {
-                document.getElementById("updatedBalance").innerText = `ยอดเงินคงเหลือใหม่: ${balance.toLocaleString()} บาท`;
+                document.getElementById("updatedBalance").innerText = `ยอดเงินคงเหลือใหม่: ${balance.toLocaleString()} `;
             } else {
-                document.getElementById("updatedBalance").innerText = `ยอดเงินคงเหลือใหม่: ${(balance - amount).toLocaleString()} บาท`;
+                document.getElementById("updatedBalance").innerText = `ยอดเงินคงเหลือใหม่: ${(balance - amount).toLocaleString()} `;
             }
         });
 
